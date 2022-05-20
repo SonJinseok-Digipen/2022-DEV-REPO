@@ -9,7 +9,7 @@ Ball::Ball(math::vec2 startPos,const CS230::Camera&camera):initPosition(startPos
 void Ball::Load()
 {
 	
-	sprite.Load("Assets/ball.png", math::ivec2{43,2});
+	sprite.Load("Assets/ball.spt");
 	position = initPosition;
 	velocity = { 0, 0 };
 	currstate = &land;

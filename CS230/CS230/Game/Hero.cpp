@@ -10,7 +10,7 @@ startPos(startPos),camera(camera)
 
 void Hero::Load()
 {
-	sprite.Load("Assets/Hero.png", math::ivec2{56,14});
+	sprite.Load("Assets/Hero.spt");
 	position = startPos;
 	IsJumping = false;
 	isRising = false;
@@ -27,14 +27,14 @@ void Hero::Update(double dt)
 	currState->TestForExit(this);
 
 	position += velocity * dt;
-	if (position.x < camera.GetPosition().x + sprite.GetTextureSize().x / 2)
+	if (position.x < camera.GetPosition().x + sprite.GetFrameSize().x / 2)
 	{
-		position.x = camera.GetPosition().x + sprite.GetTextureSize().x / 2;
+		position.x = camera.GetPosition().x + sprite.GetFrameSize().x / 2;
 		velocity.x = 0;
 	}
-	if (position.x + sprite.GetTextureSize().x / 2 > camera.GetPosition().x + Engine::GetWindow().GetSize().x) 
+	if (position.x + sprite.GetFrameSize().x / 2 > camera.GetPosition().x + Engine::GetWindow().GetSize().x) 
 	{
-		position.x = camera.GetPosition().x + Engine::GetWindow().GetSize().x - sprite.GetTextureSize().x / 2;
+		position.x = camera.GetPosition().x + Engine::GetWindow().GetSize().x - sprite.GetFrameSize().x / 2;
 		velocity.x = 0;
 	}
 	objectMatrix = math::TranslateMatrix(position);

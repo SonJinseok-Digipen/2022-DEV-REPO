@@ -19,6 +19,8 @@ private:
     double rotation;
    //Todo: if the rotateCounterKey is down, change the rotation variable by the rotation rate so it rotates in the counterclockwise direction
 
+    CS230::Sprite Leftflame;
+    CS230::Sprite Rightflame;
     CS230::InputKey rotateCounterKey;
     CS230::InputKey counterclockwise;
     CS230::InputKey accelerateKey;

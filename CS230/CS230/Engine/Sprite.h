@@ -17,15 +17,18 @@ namespace CS230 {
     class Sprite {
     public:
         Sprite();
-        void Load(const std::filesystem::path& texturePath);
-        void Load(const std::filesystem::path& texturePath, math::ivec2 hotSpotPosition);
-        void Load(const std::filesystem::path& texturePath, std::initializer_list<math::ivec2> hotspots);
-
-        void Draw(math::TransformMatrix displayMatrix);
-        math::ivec2 GetTextureSize();
+        void Load(const std::filesystem::path& spriteInfoFile);
+    	void Draw(math::TransformMatrix displayMatrix);
+        
+        void ShowFrame(int index);
         math::ivec2 GetHotSpot(int index);
+        math::ivec2 GetFrameSize() const;
     private:
         Texture texture;
+        int currFrame;
+        math::ivec2 frameSize;
+        math::ivec2 GetFrameTexel(int frameNum) const;
+        std::vector<math::ivec2>frameTexel;
         std::vector<math::ivec2> hotSpotList;
     };
 }

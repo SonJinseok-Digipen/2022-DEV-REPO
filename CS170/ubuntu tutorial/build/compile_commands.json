@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/mnt/c/Users/ttuan/OneDrive/문서/2022-DEV-REPO/CS170/ubuntu tutorial/build",
+  "command": "/usr/bin/x86_64-linux-gnu-gcc-7   -g   -o CMakeFiles/Hello.dir/main.c.o   -c \"/mnt/c/Users/ttuan/OneDrive/문서/2022-DEV-REPO/CS170/ubuntu tutorial/main.c\"",
+  "file": "/mnt/c/Users/ttuan/OneDrive/문서/2022-DEV-REPO/CS170/ubuntu tutorial/main.c"
+}
+]

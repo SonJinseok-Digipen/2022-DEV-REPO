@@ -18,7 +18,7 @@ void Mode1::Load()
 	ball2.Load();
 	ball3.Load();
 	background.Add("Assets/foreground.png", 1);
-	background.Add("Assets/Mountains.png", 2);
+	background.Add("Assets/Moutains.png", 2);
 	background.Add("Assets/clouds.png", 4);
 	camera.SetPosition({ 0,0 });
 	camera.SetExtent({ { 0,0 }, {background.Size() - Engine::GetWindow().GetSize() } });
