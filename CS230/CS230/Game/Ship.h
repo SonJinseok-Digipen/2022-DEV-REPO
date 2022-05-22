@@ -26,7 +26,9 @@ private:
     CS230::InputKey accelerateKey;
     CS230::InputKey dragKey;
     math::TransformMatrix objectMatrix;
+    bool isAccel;
     static constexpr double accel = 400;
     static constexpr double drag = 1.0f;
+    static constexpr double rotationRate = 2.0;
 
 };

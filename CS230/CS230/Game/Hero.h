@@ -11,23 +11,24 @@ Creation date: 2/11/2021
 #include "..\Engine\Sprite.h"
 #include "..\Engine\Input.h"
 #include "..\Engine\Vec2.h"
-
+#include "..\Engine\GameObject.h"
 namespace CS230
 {
     class Camera;
+    
 }
 
-class Hero {
+class Hero : public CS230::GameObject {
 public:
     Hero(math::vec2 startPos, const CS230::Camera& camera);
 
-    void Load();
+    
     void Update(double dt);
     void Draw(math::TransformMatrix cameraMatrix);
     math::vec2 GetPoistion();
 private:
     CS230::Sprite sprite;
-    math::vec2 startPos;
+   
     math::vec2 position;
 
     CS230::InputKey moveLeftKey;

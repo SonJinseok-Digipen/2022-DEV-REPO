@@ -1,22 +1,17 @@
 #include "Mode1.h"
 #include "..\Engine\Engine.h"
 #include "Screens.h"
-Mode1::Mode1() :modeNext(CS230::InputKey::Keyboard::Enter), modeReload(CS230::InputKey::Keyboard::R),
-camera(math::rect2{ Engine::GetWindow().GetSize() * 0.15,Engine::GetWindow().GetSize() * 0.35 }),
-hero({Engine::GetWindow().GetSize().x/2.0,Mode1::floor},camera),
-ball({ 600, Mode1::floor },camera), 
-ball2({ 2700, Mode1::floor }, camera),
-ball3({ 4800, Mode1::floor }, camera)
-{
-
-}
+Mode1::Mode1() : camera({ { 0.15 * Engine::GetWindow().GetSize().x, 0 }, {0.35 * Engine::GetWindow().GetSize().x, 0 } }),
+modeReload(CS230::InputKey::Keyboard::R), modeNext(CS230::InputKey::Keyboard::Enter) {}
 
 void Mode1::Load()
 {
-	hero.Load();
-	ball.Load();
-	ball2.Load();
-	ball3.Load();
+	heroPtr = new Hero({ 150, Mode1::floor }, camera);
+	gameObjectManager.Add(heroPtr);
+	gameObjectManager.Add(new Ball({ 600, Mode1::floor }));
+	gameObjectManager.Add(new Ball({ 2700, Mode1::floor }));
+	gameObjectManager.Add(new Ball({ 4800, Mode1::floor }));
+
 	background.Add("Assets/foreground.png", 1);
 	background.Add("Assets/Moutains.png", 2);
 	background.Add("Assets/clouds.png", 4);

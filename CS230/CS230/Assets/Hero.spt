@@ -11,3 +11,8 @@ Frame 128 128
 Frame 256 128 
 Frame 384 128 
 Frame 512 128
+Anim assets/hero_Idle.anm
+Anim assets/hero_Run.anm
+Anim assets/hero_Jump.anm
+Anim assets/hero_Fall.anm
+Anim assets/hero_Skid.anm

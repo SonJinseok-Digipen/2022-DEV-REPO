@@ -15,6 +15,7 @@ Creation date: 2/10/2021
 #include"Ball.h"
 #include"..\Engine\Camera.h"
 #include"Background.h"
+#include"..\Engine\GameObjectManager.h"
 class Mode1 : public CS230::GameState 
 {
 public:
@@ -28,12 +29,10 @@ public:
 	std::string GetName() override { return "Mode 1"; }
 private:
 	CS230::Camera camera;
-	Hero hero;
-	Ball ball;
-	Ball ball2;
-	Ball ball3;
+
 	Background background;
-	
+	CS230::GameObjectManager gameObjectManager;
+	Hero* heroPtr;
 	
 	CS230::InputKey modeNext;
 	CS230::InputKey modeReload;

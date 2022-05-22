@@ -1,8 +1,9 @@
 #include "Ship.h"
 #include "..\Engine/Engine.h"
+#include"Flame_Anims.h"
 Ship::Ship(math::vec2 startPos) : rotateCounterKey(CS230::InputKey::Keyboard::A), 
 counterclockwise(CS230::InputKey::Keyboard::D), accelerateKey(CS230::InputKey::Keyboard::W), 
-dragKey(CS230::InputKey::Keyboard::S),startPos(startPos),rotation()
+dragKey(CS230::InputKey::Keyboard::S),startPos(startPos),rotation(),isAccel(false)
 {
 	
 }
@@ -10,9 +11,9 @@ dragKey(CS230::InputKey::Keyboard::S),startPos(startPos),rotation()
 void Ship::Load()
 {
 	position = startPos;
-	sprite.Load("assets/Ship.spt");
-	Leftflame.Load("assets/Flame.spt");
-	Rightflame.Load("assets/Flame.spt");
+	sprite.Load("Assets/Ship.spt");
+	Leftflame.Load("Assets/Flame.spt");
+	Rightflame.Load("Assets/Flame.spt");
 }
 
 void Ship::Update(double dt)
@@ -20,37 +21,44 @@ void Ship::Update(double dt)
 	if (rotateCounterKey.IsKeyDown() == true) 
 	{
 		rotation += 0.1;
-		Leftflame.ShowFrame(0);
-		Rightflame.ShowFrame(0);
+		
 	}
 	else if (counterclockwise.IsKeyDown() == true) 
 	{
 		rotation -= 0.1;
-		Leftflame.ShowFrame(0);
-		Rightflame.ShowFrame(0);
+		
 	}
 	else if (accelerateKey.IsKeyDown() == true) 
 	{
 		velocity += math::RotateMatrix(rotation) * math::vec2{ 0, accel * dt };
-		Leftflame.ShowFrame(0);
-		Rightflame.ShowFrame(0);
+		if (isAccel == false) {
+			Leftflame.PlayAnimation(static_cast<int>(Flame_Anim::Flame_Anim));
+			Rightflame.PlayAnimation(static_cast<int>(Flame_Anim::Flame_Anim));
+			isAccel = true;
+		}
+		
 	}
 	else if (dragKey.IsKeyDown() == true) 
 	{
 		velocity -= drag * dt*2;
-		Leftflame.ShowFrame(0);
-		Rightflame.ShowFrame(0);
+		
 	}
 	else
 	{
-		Leftflame.ShowFrame(4);
-		Rightflame.ShowFrame(4);
+		if (isAccel == true) {
+			Engine::GetLogger().LogDebug("Stopped Accelerating");
+			Leftflame.PlayAnimation(static_cast<int>(Flame_Anim::None_Anim));
+			Rightflame.PlayAnimation(static_cast<int>(Flame_Anim::None_Anim));
+			isAccel = false;
+		}
 	}
 
 	velocity -= (velocity * Ship::drag * dt);
 	position += velocity * dt;
 	TestForWrap();
-	
+	sprite.Update(dt);
+	Leftflame.Update(dt);
+	Rightflame.Update(dt);
 	objectMatrix = math::TranslateMatrix(position)*math::RotateMatrix(rotation)*math::ScaleMatrix({ 0.75, 0.75 });
 
 }
@@ -58,8 +66,20 @@ void Ship::Update(double dt)
 void Ship::Draw()
 {
 		sprite.Draw(objectMatrix);
-		Leftflame.Draw( objectMatrix*math::TranslateMatrix( sprite.GetHotSpot(1)));
-	    Rightflame.Draw(objectMatrix* math::TranslateMatrix(sprite.GetHotSpot(2)));
+		if (isAccel == true)
+		{
+			Leftflame.Draw(objectMatrix * math::TranslateMatrix(sprite.GetHotSpot(1)));
+			Rightflame.Draw(objectMatrix * math::TranslateMatrix(sprite.GetHotSpot(2)));
+
+		}
+
+
+		if (isAccel == false)
+		{
+			Leftflame.Draw(objectMatrix * math::TranslateMatrix(sprite.GetHotSpot(1)));
+			Rightflame.Draw(objectMatrix * math::TranslateMatrix(sprite.GetHotSpot(2)));
+
+		}
 }
 
 void Ship::TestForWrap()

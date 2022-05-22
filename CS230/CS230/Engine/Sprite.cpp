@@ -1,14 +1,27 @@
-#include"Sprite.h"
-#include<fstream>
+/*--------------------------------------------------------------
+Copyright (C) 2021 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the prior
+written consent of DigiPen Institute of Technology is prohibited.
+File Name: Sprite.cpp
+Project: CS230
+Author: Kevin Wright
+Creation date: 2/11/2021
+-----------------------------------------------------------------*/
+#include "Engine.h"			//Engine::GetLogger
+#include "TransformMatrix.h"
+#include "Sprite.h"
+#include"Animation.h"
+CS230::Sprite::Sprite() {}
 
-#include "Engine.h"
-
-CS230::Sprite::Sprite()
-{
-
+CS230::Sprite::~Sprite() {
+	for (Animation* anim : animations) {
+		delete anim;
+	}
+	animations.clear();
 }
 
 void CS230::Sprite::Load(const std::filesystem::path& spriteInfoFile) {
+	animations.clear();
 	hotSpotList.clear();
 	frameTexel.clear();
 
@@ -51,6 +64,10 @@ void CS230::Sprite::Load(const std::filesystem::path& spriteInfoFile) {
 			inFile >> hotSpotY;
 			hotSpotList.push_back({ hotSpotX, hotSpotY });
 		}
+		else if (text == "Anim") {
+			inFile >> text;
+			animations.push_back(new Animation(text));
+		}
 		else {
 			Engine::GetLogger().LogError("Unknown spt command " + text);
 		}
@@ -59,43 +76,53 @@ void CS230::Sprite::Load(const std::filesystem::path& spriteInfoFile) {
 	if (frameTexel.empty() == true) {
 		frameTexel.push_back({ 0,0 });
 	}
+	if (animations.empty() == true) {
+		animations.push_back(new Animation());
+		PlayAnimation(0);
+	}
 }
 
-
-
-
-
-void CS230::Sprite::ShowFrame(int index)
-{
-	currFrame = index;
-}
-
-
-
-void CS230::Sprite::Draw(math::TransformMatrix displayMatrix)
-{
-	texture.Draw(displayMatrix * math::TranslateMatrix(-GetHotSpot(0)),frameTexel[currFrame],GetFrameSize());
-	
-}
-
-math::ivec2 CS230::Sprite::GetHotSpot(int index) 
-{
+math::ivec2 CS230::Sprite::GetHotSpot(int index) {
+	if (index >= hotSpotList.size()) {
+		Engine::GetLogger().LogError("Sprite is missing hotspot index: " + std::to_string(index));
+		return { 0,0 };
+	}
 	return hotSpotList[index];
 }
 
-math::ivec2 CS230::Sprite::GetFrameSize() const
-{
+void CS230::Sprite::PlayAnimation(int anim) {
+	if (anim < 0 || anim >= animations.size()) {
+		Engine::GetLogger().LogError("Animation " + std::to_string(anim) + " not found");
+		currAnim = 0;
+	}
+	else {
+		currAnim = anim;
+		animations[currAnim]->ResetAnimation();
+	}
+}
+
+bool CS230::Sprite::IsAnimationDone() {
+	return animations[currAnim]->IsAnimationDone();
+}
+
+void CS230::Sprite::Update(double dt) {
+	animations[currAnim]->Update(dt);
+}
+
+math::ivec2 CS230::Sprite::GetFrameSize() const {
 	return frameSize;
 }
 
-math::ivec2 CS230::Sprite::GetFrameTexel(int frameNum) const
-{
-	if(currFrame >= 0 && currFrame <= frameTexel.size())
-	{
-		throw std::runtime_error("You try to access wrong frame");
+math::ivec2 CS230::Sprite::GetFrameTexel(int frameNum) const {
+	if (frameNum < 0 || frameNum > frameTexel.size()) {
+		Engine::GetLogger().LogError("Bad frame request: " + std::to_string(frameNum));
+		return { 0, 0 };
 	}
-	return frameTexel[frameNum];
+	else {
+		return frameTexel[frameNum];
+	}
 }
 
-	
-	
+void CS230::Sprite::Draw(math::TransformMatrix displayMatrix) {
+	texture.Draw(displayMatrix * math::TranslateMatrix(-GetHotSpot(0)), GetFrameTexel(animations[currAnim]->GetDisplayFrame()), GetFrameSize());
+}

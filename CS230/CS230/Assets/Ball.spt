@@ -1,4 +1,6 @@
-assets/ball.png
-FrameSize  87 88
-HotSpot 43 1
-NumFrames 1
+assets/Ball.png
+HotSpot 43 0
+FrameSize 87 88
+NumFrames 3
+Anim assets/none.anm
+Anim assets/ballSquish.anm
