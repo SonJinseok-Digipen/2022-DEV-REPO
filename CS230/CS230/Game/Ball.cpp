@@ -24,7 +24,7 @@ void Ball::Update(double dt)
 }
 
 
-void Ball::Draw(math::TransformMatrix& cameraMatrix) 
+void Ball::Draw(math::TransformMatrix cameraMatrix) 
 {
 	sprite.Draw(cameraMatrix*objectMatrix);
 }

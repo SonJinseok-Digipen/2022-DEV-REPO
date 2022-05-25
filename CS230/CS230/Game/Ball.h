@@ -24,7 +24,7 @@ class Ball :public CS230::GameObject
 public:
     Ball(math::vec2 startPos,const CS230::Camera&camera);
     void Update(double dt) override;
-    void Draw(math::TransformMatrix&camera) override;
+    void Draw(math::TransformMatrix camera) override;
 
 private:
     CS230::Sprite sprite;

@@ -4,12 +4,12 @@
 #include "..\Engine\Input.h"
 #include "..\Engine\Vec2.h"
 #include"..\Engine\TransformMatrix.h"
-class Ship {
+#include"..\Engine\GameObject.h"
+class Ship :public CS230::GameObject{
 public:
     Ship(math::vec2 startPos);
-    void Load();
-    void Update(double dt);
-    void Draw();
+    void Update(double dt) override;
+    void Draw(math::TransformMatrix cameraMatrix) override;
     void TestForWrap();
 private:
     CS230::Sprite sprite;

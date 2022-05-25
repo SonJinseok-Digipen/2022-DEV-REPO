@@ -8,10 +8,12 @@ void Mode1::Load()
 {
 	heroPtr = new Hero({ 150, Mode1::floor }, camera);
 	gameObjectManager.Add(heroPtr);
-	gameObjectManager.Add(new Ball({ 600, Mode1::floor }));
-	gameObjectManager.Add(new Ball({ 2700, Mode1::floor }));
-	gameObjectManager.Add(new Ball({ 4800, Mode1::floor }));
 
+	 
+	gameObjectManager.Add(new Ball({ 600, Mode1::floor },camera));
+	gameObjectManager.Add(new Ball({ 2700, Mode1::floor },camera));
+	gameObjectManager.Add(new Ball({ 4800, Mode1::floor },camera));
+	   
 	background.Add("Assets/foreground.png", 1);
 	background.Add("Assets/Moutains.png", 2);
 	background.Add("Assets/clouds.png", 4);
@@ -27,18 +29,16 @@ void Mode1::Update([[maybe_unused]]double dt)
 		Engine::GetGameStateManager().ReloadState();
 	}
 #else 						
-	#endif
-	if(modeNext.IsKeyReleased()==true)
+	#endif 
+	if (modeNext.IsKeyReleased() == true)
 	{
 		Engine::GetGameStateManager().SetNextState(static_cast<int>(Screens::Mode2));
 	}
-	camera.Update(hero.GetPoistion());
-	hero.Update(dt);
-	ball.Update(dt);
-	ball2.Update(dt);
-	ball3.Update(dt);
+	gameObjectManager.UpdateAll(dt);
+	camera.Update(heroPtr->GetPoistion());
+	
 
-	//Engine::GetLogger().LogDebug(std::to_string(camera.GetPosition().x));
+	Engine::GetLogger().LogDebug(std::to_string(camera.GetPosition().x));
 }
 
 void Mode1::Unload()
@@ -52,9 +52,6 @@ void Mode1::Draw()
 	//back ground drawing order should be cloud mountatin foreground
 	background.Draw(camera);
 	math::TransformMatrix cameraMatrix = camera.GetMatrix();
-	hero.Draw(cameraMatrix);
-	ball.Draw(cameraMatrix);
-	ball2.Draw(cameraMatrix);
-	ball3.Draw(cameraMatrix);
+	gameObjectManager.DrawAll(cameraMatrix);
 
 }

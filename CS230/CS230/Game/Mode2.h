@@ -11,7 +11,12 @@ Creation date: 2/10/2021
 #include "..\Engine\GameState.h"
 #include "..\Engine\Input.h"
 #include"Ship.h"
-class Mode2 : public CS230::GameState {
+#include"..\Engine\GameObjectManager.h"
+
+
+class Mode2 : public CS230::GameState 
+{
+	
 public:
 	Mode2();
 	void Load() override;
@@ -23,5 +28,6 @@ private:
 	
 	CS230::InputKey modeNext;
 	CS230::InputKey modeReload;
-	Ship ship;
+	Ship* shipptr;
+	CS230::GameObjectManager gameObjectManager;
 };

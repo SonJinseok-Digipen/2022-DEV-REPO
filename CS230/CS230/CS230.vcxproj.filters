@@ -64,9 +64,6 @@
     <ClCompile Include="Engine\Animation.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\GameObjectManager.h">
-      <Filter>Engine</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\GameObjectManager.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -145,6 +142,9 @@
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Engine\GameObject.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObjectManager.h">
       <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>

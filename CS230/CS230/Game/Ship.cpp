@@ -5,16 +5,12 @@ Ship::Ship(math::vec2 startPos) : rotateCounterKey(CS230::InputKey::Keyboard::A)
 counterclockwise(CS230::InputKey::Keyboard::D), accelerateKey(CS230::InputKey::Keyboard::W), 
 dragKey(CS230::InputKey::Keyboard::S),startPos(startPos),rotation(),isAccel(false)
 {
-	
-}
-
-void Ship::Load()
-{
 	position = startPos;
 	sprite.Load("Assets/Ship.spt");
 	Leftflame.Load("Assets/Flame.spt");
 	Rightflame.Load("Assets/Flame.spt");
 }
+
 
 void Ship::Update(double dt)
 {
@@ -63,21 +59,21 @@ void Ship::Update(double dt)
 
 }
 
-void Ship::Draw()
+void Ship::Draw(math::TransformMatrix cameraMatrix)
 {
 		sprite.Draw(objectMatrix);
 		if (isAccel == true)
 		{
-			Leftflame.Draw(objectMatrix * math::TranslateMatrix(sprite.GetHotSpot(1)));
-			Rightflame.Draw(objectMatrix * math::TranslateMatrix(sprite.GetHotSpot(2)));
+			Leftflame.Draw((objectMatrix *cameraMatrix) * math::TranslateMatrix(sprite.GetHotSpot(1)));
+			Rightflame.Draw((objectMatrix * cameraMatrix) * math::TranslateMatrix(sprite.GetHotSpot(2)));
 
 		}
 
 
 		if (isAccel == false)
 		{
-			Leftflame.Draw(objectMatrix * math::TranslateMatrix(sprite.GetHotSpot(1)));
-			Rightflame.Draw(objectMatrix * math::TranslateMatrix(sprite.GetHotSpot(2)));
+			Leftflame.Draw((objectMatrix * cameraMatrix) * math::TranslateMatrix(sprite.GetHotSpot(1)));
+			Rightflame.Draw((objectMatrix * cameraMatrix) * math::TranslateMatrix(sprite.GetHotSpot(2)));
 
 		}
 }
