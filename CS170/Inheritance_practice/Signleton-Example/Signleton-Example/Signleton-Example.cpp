@@ -5,6 +5,7 @@
 
 */
 #include<iostream>
+#include<string>
 class MoreModifierExamples
 {
 public:
@@ -21,6 +22,30 @@ protected:
     float protectedNumber;
     int AlsoProtected() { return 0; }
 };
+
+class StaticExamples
+{
+public:
+    static float classVariable;
+    static void StaticFunction()
+    {
+        // Note, can only use static variables and functions within
+        // static function
+        std::string toDisplay = "\n I can be called anywhere! classVariable value : " + std::to_string(classVariable);
+           
+    }
+    void InFunction()
+    {
+        static int enemyCount = 0;
+        // Increase the value of enemyCount
+        enemyCount += 10;
+        std::string toDisplay = "\n Value of enemyCount: " +
+            std::to_string(enemyCount);
+        printf(toDisplay.c_str());
+    }
+};
+
+
 
 class Fun
 {
