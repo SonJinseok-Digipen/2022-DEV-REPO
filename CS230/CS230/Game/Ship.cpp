@@ -3,7 +3,7 @@
 #include"Flame_Anims.h"
 Ship::Ship(math::vec2 startPos) : rotateCounterKey(CS230::InputKey::Keyboard::A), 
 counterclockwise(CS230::InputKey::Keyboard::D), accelerateKey(CS230::InputKey::Keyboard::W), 
-dragKey(CS230::InputKey::Keyboard::S),startPos(startPos),rotation(),isAccel(false)
+dragKey(CS230::InputKey::Keyboard::S),startPos(startPos),rotation(),isAccel(false),GameObject(startPos)
 {
 	position = startPos;
 	sprite.Load("Assets/Ship.spt");

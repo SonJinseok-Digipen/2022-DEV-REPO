@@ -1,15 +1,29 @@
+/*--------------------------------------------------------------
+Copyright (C) 2021 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the prior
+written consent of DigiPen Institute of Technology is prohibited.
+File Name: Hero.cpp
+Project: CS230
+Author: Kevin Wright
+Creation date: 2/11/2021
+-----------------------------------------------------------------*/
+#include "../Engine/Engine.h"	//GetLogger
+#include "../Engine/Camera.h"
+#include "Mode1.h"	//Level1::gravity
 #include "Hero.h"
-#include"..\Engine\Engine.h"
-#include"Mode1.h"
-#include"..\Engine\Camera.h"
-#include"Hero_Anims.h"
-Hero::Hero(math::vec2 startPos,const CS230::Camera&camera) :moveLeftKey(CS230::InputKey::Keyboard::Left),moveRightKey(CS230::InputKey::Keyboard::Right),
-moveJumpKey(CS230::InputKey::Keyboard::Up),currState(&stateIdle),
-position(startPos),camera(camera),IsJumping(false),isRising(false)
+
+#include <iostream>
+
+#include "Hero_Anims.h"
+
+Hero::Hero(math::vec2 startPos, const CS230::Camera& camera) : GameObject(startPos), camera(camera),
+jumpKey(CS230::InputKey::Keyboard::Up),
+moveLeftKey(CS230::InputKey::Keyboard::Left), moveRightKey(CS230::InputKey::Keyboard::Right), isFlipped(false)
 {
-	sprite.Load("Assets/Hero.spt");
-	
-	
+	sprite.Load("assets/Hero.spt");
+	currState = &stateIdle;
+	currState->Enter(this);
+
 }
 
 
@@ -17,309 +31,209 @@ position(startPos),camera(camera),IsJumping(false),isRising(false)
 void Hero::Update(double dt)
 {
 	
-	
-
-
-	currState->Update(this, dt);
-	position += velocity * dt;
-	sprite.Update(dt);
-	currState->TestForExit(this);
-
-	position += velocity * dt;
-	if (position.x < camera.GetPosition().x + sprite.GetFrameSize().x / 2)
+	GameObject::Update(dt);
+	// Boundry Check
+	if (GetPosition().x < camera.GetPosition().x + sprite.GetFrameSize().x / 2)
 	{
-		position.x = camera.GetPosition().x + sprite.GetFrameSize().x / 2;
-		velocity.x = 0;
+		SetPosition(math::vec2{ camera.GetPosition().x + sprite.GetFrameSize().x / 2 ,GetPosition().y });
+		SetVelocity(math::vec2{ 0,GetVelocity().y});
+
 	}
-	if (position.x + sprite.GetFrameSize().x / 2 > camera.GetPosition().x + Engine::GetWindow().GetSize().x) 
+	if (GetPosition().x + sprite.GetFrameSize().x / 2 > camera.GetPosition().x + Engine::GetWindow().GetSize().x)
 	{
-		position.x = camera.GetPosition().x + Engine::GetWindow().GetSize().x - sprite.GetFrameSize().x / 2;
-		velocity.x = 0;
+		SetPosition(math::vec2{ camera.GetPosition().x + Engine::GetWindow().GetSize().x - sprite.GetFrameSize().x / 2 ,GetPosition().y });
+		SetVelocity(math::vec2{ 0,GetVelocity().y });
 	}
-	objectMatrix = math::TranslateMatrix(position);
-	if (isFliped == true)
+	//objectMatrix = math::TranslateMatrix(position);
+	if (isFlipped == true)
 	{
-		objectMatrix *= math::ScaleMatrix({ -1.0, 1 });
+		SetScale(math::vec2{ -1,1 });
 	}
-	
-	
-}
-
-
-void Hero::UpdateXVelocity(double dt)
-{
-	if (moveRightKey.IsKeyDown() == true)
+	if (isFlipped == false)
 	{
-		
-		if (velocity.x > 0)
-		{
-			velocity.x += xAcceleration.x * dt;
-
-			if (velocity.x >= MaxXvelocity.x)
-			{
-				velocity.x = MaxXvelocity.x;
-				Engine::GetLogger().LogDebug("+Max Velocity");
-			}
-			else
-			{
-				Engine::GetLogger().LogDebug("+Accelerating");
-			}
-
-
-		}
-		else
-		{
-			velocity.x += xDrag.x * dt;
-			Engine::GetLogger().LogDebug("+Skidding");
-		}
+		SetScale(math::vec2{ 1,1 });
 	}
-	else if (moveLeftKey.IsKeyDown() == true)
-	{
-		
-		if (velocity.x < 0)
-		{
-			velocity.x -= xAcceleration.x * dt;
-
-			if (velocity.x <= -1 * MaxXvelocity.x)
-			{
-				velocity.x = -1 * MaxXvelocity.x;
-				Engine::GetLogger().LogDebug("-Max Velocity");
-			}
-			else
-			{
-				Engine::GetLogger().LogDebug("-Accelerating");
-			}
-
-
-		}
-		else
-		{
-			velocity.x -= xDrag.x * dt;
-			Engine::GetLogger().LogDebug("-Skidding");
-		}
-	}
-	else
-	{
-		if (velocity.x > xDrag.x * dt) {
-			Engine::GetLogger().LogDebug("-Dragging");
-			velocity.x -= xDrag.x * dt;
-		}
-		else if (velocity.x < -xDrag.x * dt) {
-			Engine::GetLogger().LogDebug("+Dragging");
-			velocity.x += xDrag.x * dt;
-		}
-		else
-		{
-			if (velocity.x != 0)
-			{
-				Engine::GetLogger().LogDebug("Stopped");
-			}
-			velocity.x = 0;
-		}
-	}
-	
 }
 
 
 
 
-void Hero::ChangeState(State* newState)
+void Hero::State_Idle::Enter(GameObject* hero)
 {
-	Engine::GetLogger().LogDebug("Leaving State: " + currState->GetName() + " Entering State: " + newState->GetName());
-	currState = newState;
-	currState->Enter(this);
+
+	static_cast<Hero*>(hero)->sprite.PlayAnimation(static_cast<int>(Hero_Anim::Hero_Idle_Anim));
 }
-
-
-void Hero::Draw(math::TransformMatrix cameraMaxtrix)
-{
-	sprite.Draw(cameraMaxtrix*objectMatrix);
-}
-
-math::vec2 Hero::GetPoistion()
-{
-	return position;
-}
-
-
-void Hero::State_Idle::Enter(Hero* hero)
-{
-	hero->sprite.PlayAnimation(static_cast<int>(Hero_Anim::Hero_Idle_Anim));
-}
-
-void Hero::State_Idle::Update(Hero* hero, double dt)
+void Hero::State_Idle::Update(GameObject*, double)
 {
 
 }
-
-void Hero::State_Idle::TestForExit(Hero* hero)
+void Hero::State_Idle::TestForExit(GameObject* hero)
 {
-	if (hero->moveLeftKey.IsKeyDown() == true) 
+
+
+	if (static_cast<Hero*>(hero)->moveLeftKey.IsKeyDown() == true)
 	{
-		hero->ChangeState(&hero->stateRunning);
-		
+
 	}
-	if (hero->moveRightKey.IsKeyDown() == true) {
-		hero->ChangeState(&hero->stateRunning);
-		
-	}
-	if (hero->moveJumpKey.IsKeyDown() == true) 
+
+	if (static_cast<Hero*>(hero)->moveRightKey.IsKeyDown() == true)
 	{
-		hero->ChangeState(&hero->stateJumping);
-		
+		static_cast<Hero*>(hero)->ChangeState(&static_cast<Hero*>(hero)->stateRunning);
 	}
-	
+	if (static_cast<Hero*>(hero)->jumpKey.IsKeyDown() == true)
+	{
+		static_cast<Hero*>(hero)->ChangeState(&static_cast<Hero*>(hero)->stateJumping);
+	}
+
+
 }
 
-
-
-
-
-void Hero::State_Running::Enter(Hero* hero)
-{
-	hero->sprite.PlayAnimation(static_cast<int>(Hero_Anim::Hero_Run_Anim));
-	if (hero->moveRightKey.IsKeyDown() == true) 
-	{
-		hero->isFliped = false;
-		
+void Hero::State_Running::Enter(GameObject* hero) {
+	static_cast<Hero*>(hero)->sprite.PlayAnimation(static_cast<int>(Hero_Anim::Hero_Run_Anim));
+	if (static_cast<Hero*>(hero)->moveRightKey.IsKeyDown() == true) {
+		static_cast<Hero*>(hero)->isFlipped = false;
 	}
-	if (hero->moveLeftKey.IsKeyDown() == true) {
-		hero->isFliped = true;
-		
+	if (static_cast<Hero*>(hero)->moveLeftKey.IsKeyDown() == true) {
+		static_cast<Hero*>(hero)->isFlipped = true;
 	}
 }
-
-void Hero::State_Running::Update(Hero* hero, double dt)
-{
-	hero->UpdateXVelocity(dt);
+void Hero::State_Running::Update(GameObject* hero, double dt) {
+	static_cast<Hero*>(hero)->UpdateXVelocity(dt);
 }
-
-void Hero::State_Running::TestForExit(Hero* hero)
-{
-
-	if (hero->moveLeftKey.IsKeyDown() == true && hero->velocity.x > 0)
-	{
-		hero->ChangeState(&hero->stateSkidding);
+void Hero::State_Running::TestForExit(GameObject* hero) {
+	if (static_cast<Hero*>(hero)->moveLeftKey.IsKeyDown() == true && hero->GetVelocity().x > 0) {
+		static_cast<Hero*>(hero)->ChangeState(&static_cast<Hero*>(hero)->stateSkidding);
 	}
-	if (hero->moveRightKey.IsKeyDown() == true && hero->velocity.x < 0)
-	{
-		hero->ChangeState(&hero->stateSkidding);
+	if (static_cast<Hero*>(hero)->moveRightKey.IsKeyDown() == true && static_cast<Hero*>(hero)->GetVelocity().x < 0) {
+		static_cast<Hero*>(hero)->ChangeState(&static_cast<Hero*>(hero)->stateSkidding);
 	}
-	if (hero->velocity.x == 0)
-	{
-		hero->ChangeState(&hero->stateIdle);
+	if (static_cast<Hero*>(hero)->GetVelocity().x == 0) {
+		static_cast<Hero*>(hero)->ChangeState(&static_cast<Hero*>(hero)->stateIdle);
 	}
-	if (hero->moveJumpKey.IsKeyDown() == true)
-	{
-		hero->ChangeState(&hero->stateJumping);
+	if (static_cast<Hero*>(hero)->jumpKey.IsKeyDown() == true) {
+		static_cast<Hero*>(hero)->ChangeState(&static_cast<Hero*>(hero)->stateJumping);
 	}
 }
 
-void Hero::State_Skidding::Enter(Hero* hero)
-{
-	hero->sprite.PlayAnimation(static_cast<int>(Hero_Anim::Hero_Skid_Anim));
+void Hero::State_Skidding::Enter(GameObject* hero) {
+	static_cast<Hero*>(hero)->sprite.PlayAnimation(static_cast<int>(Hero_Anim::Hero_Fall_Anim));
 }
-
-void Hero::State_Skidding::Update(Hero* hero, double dt)
-{
-	if (hero->velocity.x > 0) {
-		hero->velocity.x -= (xDrag.x + xAcceleration.x) * dt;
-	}
-	else if (hero->velocity.x < 0) {
-		hero->velocity.x += (xDrag.x + xAcceleration.x) * dt;
-	}
-}
-
-void Hero::State_Skidding::TestForExit(Hero* hero)
-{
-	if (hero->moveLeftKey.IsKeyDown() == true)
+void Hero::State_Skidding::Update(GameObject* hero, double dt) {
+	if (static_cast<Hero*>(hero)->GetVelocity().x > 0)
 	{
-		if (hero->velocity.x <= 0) {
-			hero->ChangeState(&hero->stateRunning);
+		static_cast<Hero*>(hero)->UpdateVelocity(math::vec2{ -(xDrag + xAccel) * dt,0 });
+	}
+	else if (hero->GetVelocity().x < 0)
+	{
+		static_cast<Hero*>(hero)->UpdateVelocity(math::vec2{ (xDrag + xAccel) * dt,0 });
+
+	}
+}
+void Hero::State_Skidding::TestForExit(GameObject* hero) {
+	if (static_cast<Hero*>(hero)->moveLeftKey.IsKeyDown() == true) {
+		if (static_cast<Hero*>(hero)->GetVelocity().x <= 0) {
+			static_cast<Hero*>(hero)->ChangeState(&static_cast<Hero*>(hero)->stateRunning);
 		}
 	}
-	else if (hero->moveRightKey.IsKeyDown() == true)
-	{
-		if (hero->velocity.x >= 0) {
-			hero->ChangeState(&hero->stateRunning);
+	else if (static_cast<Hero*>(hero)->moveRightKey.IsKeyDown() == true) {
+		if (static_cast<Hero*>(hero)->GetVelocity().x >= 0) {
+			static_cast<Hero*>(hero)->ChangeState(&static_cast<Hero*>(hero)->stateRunning);
 		}
 	}
-	if (hero->moveJumpKey.IsKeyDown() == true) {
-		hero->ChangeState(&hero->stateJumping);
+	else {
+		static_cast<Hero*>(hero)->ChangeState(&static_cast<Hero*>(hero)->stateRunning);
+	}
+	if (static_cast<Hero*>(hero)->jumpKey.IsKeyDown() == true) {
+		static_cast<Hero*>(hero)->ChangeState(&static_cast<Hero*>(hero)->stateJumping);
 	}
 }
 
-void Hero::State_Jumping::Enter(Hero* hero)
-{
-	hero->velocity.y = Hero::InstaneousJumpVelocity;
-	hero->sprite.PlayAnimation(static_cast<int>(Hero_Anim::Hero_Jump_Anim));
+void Hero::State_Jumping::Enter(GameObject* hero) {
+	static_cast<Hero*>(hero)->sprite.PlayAnimation(static_cast<int>(Hero_Anim::Hero_Jump_Anim));
+	static_cast<Hero*>(hero)->SetVelocity(math::vec2{ hero->GetVelocity().x,Hero::jumpVelocity });
 }
-
-void Hero::State_Jumping::Update(Hero* hero, double dt)
+void Hero::State_Jumping::Update(GameObject* hero, double dt)
 {
-	hero->velocity.y -= Mode1::gravity * dt;
-	hero->UpdateXVelocity(dt);
+	static_cast<Hero*>(hero)->UpdateVelocity(math::vec2{ 0,-Mode1::gravity * dt });
+	static_cast<Hero*>(hero)->UpdateXVelocity(dt);
 }
-
-void Hero::State_Jumping::TestForExit(Hero* hero)
-{
-	if (hero->moveJumpKey.IsKeyDown() == false)
-	{
-		hero->velocity.y = 0;
-		hero->ChangeState(&hero->stateFalling);
-
+void Hero::State_Jumping::TestForExit(GameObject* hero) {
+	if (static_cast<Hero*>(hero)->jumpKey.IsKeyDown() == false) {
+		static_cast<Hero*>(hero)->ChangeState(&static_cast<Hero*>(hero)->stateFalling);
+		static_cast<Hero*>(hero)->SetVelocity(math::vec2{ hero->GetVelocity().x,0 });
 	}
-	else if (hero->velocity.y <= 0)
-	{
-		hero->ChangeState(&hero->stateFalling);
+	else if (static_cast<Hero*>(hero)->GetVelocity().y <= 0) {
+		static_cast<Hero*>(hero)->ChangeState(&static_cast<Hero*>(hero)->stateFalling);
 	}
 }
 
-void Hero::State_Falling::Enter(Hero* hero)
-{
-	hero->sprite.PlayAnimation(static_cast<int>(Hero_Anim::Hero_Fall_Anim));
+void Hero::State_Falling::Enter(GameObject* hero) {
+	static_cast<Hero*>(hero)->sprite.PlayAnimation(static_cast<int>(Hero_Anim::Hero_Fall_Anim));
 }
-
-void Hero::State_Falling::Update(Hero* hero, double dt)
+void Hero::State_Falling::Update(GameObject* hero, double dt)
 {
-	hero->velocity.y -= Mode1::gravity * dt;
-	hero->UpdateXVelocity(dt);
+	static_cast<Hero*>(hero)->UpdateVelocity(math::vec2{ 0,-Mode1::gravity * dt });
+	static_cast<Hero*>(hero)->UpdateXVelocity(dt);
 }
-
-void Hero::State_Falling::TestForExit(Hero* hero)
-{
-	if (hero->GetPoistion().y <= Mode1::floor)
-	{
-		hero->velocity.y = 0;
-		hero->position.y = Mode1::floor;
-		if (hero->velocity.x > 0)
-		{
-			if (hero->moveLeftKey.IsKeyDown() == true)
-			{
-				hero->ChangeState(&hero->stateSkidding);
-			}
-			else
-			{
-				hero->ChangeState(&hero->stateRunning);
-			}
-		}
-
-		else if (hero->velocity.x < 0)
-		{
-			if (hero->moveRightKey.IsKeyDown() == true) {
-				hero->ChangeState(&hero->stateSkidding);
+void Hero::State_Falling::TestForExit(GameObject* hero) {
+	if (hero->GetPosition().y <= Mode1::floor) {
+		if (hero->GetVelocity().x > 0) {
+			if (static_cast<Hero*>(hero)->moveLeftKey.IsKeyDown() == true) {
+				static_cast<Hero*>(hero)->ChangeState(&static_cast<Hero*>(hero)->stateSkidding);
 			}
 			else {
-				hero->ChangeState(&hero->stateRunning);
+				static_cast<Hero*>(hero)->ChangeState(&static_cast<Hero*>(hero)->stateRunning);
 			}
 		}
-		else
+		else if (static_cast<Hero*>(hero)->GetVelocity().x < 0) {
+			if (static_cast<Hero*>(hero)->moveRightKey.IsKeyDown() == true) {
+				static_cast<Hero*>(hero)->ChangeState(&static_cast<Hero*>(hero)->stateSkidding);
+			}
+			else {
+				static_cast<Hero*>(hero)->ChangeState(&static_cast<Hero*>(hero)->stateRunning);
+			}
+		}
+		else {
+			static_cast<Hero*>(hero)->ChangeState(&static_cast<Hero*>(hero)->stateIdle);
+		}
+		static_cast<Hero*>(hero)->SetVelocity(math::vec2{ hero->GetVelocity().x,0 });
+		static_cast<Hero*>(hero)->SetPosition(math::vec2{ hero->GetPosition().x,Mode1::floor });
+
+
+	}
+}
+
+void Hero::UpdateXVelocity(double dt) {
+	if (moveLeftKey.IsKeyDown() == true)
+	{
+		UpdateVelocity(math::vec2{ -Hero::xAccel * dt,0 });
+		// apply acceleration
+		if (GetVelocity().x < -Hero::maxXVelocity) {
+			SetVelocity(math::vec2{ -Hero::maxXVelocity ,GetVelocity().y });
+		}
+	}
+	else if (moveRightKey.IsKeyDown() == true) {
+		UpdateVelocity(math::vec2{ Hero::xAccel * dt,0 });	// apply acceleration
+		if (GetVelocity().x > Hero::maxXVelocity)
 		{
-			hero->ChangeState(&hero->stateRunning);
+			SetVelocity(math::vec2{ Hero::maxXVelocity ,GetVelocity().y });
 		}
-		if (hero->moveJumpKey.IsKeyDown() == true) {
-			hero->ChangeState(&hero->stateJumping);
+	}
+	else {
+		// no key is down, need to apply drag to slow down
+		double xDragDt = Hero::xDrag * dt;
+		if (GetVelocity().x > xDragDt)
+		{
+			//velocity.x -= xDragDt;
+			UpdateVelocity(math::vec2{ -xDragDt,0 });
 		}
-	
+		else if (GetVelocity().x < -xDragDt)
+		{
+			//velocity.x += xDragDt;
+			UpdateVelocity(math::vec2{ xDragDt,0 });
+		}
+		else {
+			SetVelocity(math::vec2{ 0,GetVelocity().y });
+		}
 	}
 }

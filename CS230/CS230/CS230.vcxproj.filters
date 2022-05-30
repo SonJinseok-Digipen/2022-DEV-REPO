@@ -67,6 +67,18 @@
     <ClCompile Include="Engine\GameObjectManager.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\GameObject.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\TreeStump.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Bunny.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Meteor.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Logger.h">
@@ -146,6 +158,15 @@
     </ClInclude>
     <ClInclude Include="Engine\GameObjectManager.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\TreeStump.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Bunny.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Meteor.h">
+      <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

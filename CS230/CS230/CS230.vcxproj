@@ -147,6 +147,7 @@ xcopy /d /y Assets\* "$(OutputPath)Assets"
     <ClCompile Include="Engine\Animation.cpp" />
     <ClCompile Include="Engine\Camera.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
+    <ClCompile Include="Engine\GameObject.cpp" />
     <ClCompile Include="Engine\GameObjectManager.cpp" />
     <ClCompile Include="Engine\GameStateManager.cpp" />
     <ClCompile Include="Engine\Input.cpp" />
@@ -158,11 +159,14 @@ xcopy /d /y Assets\* "$(OutputPath)Assets"
     <ClCompile Include="Engine\Window.cpp" />
     <ClCompile Include="Game\Background.cpp" />
     <ClCompile Include="Game\Ball.cpp" />
+    <ClCompile Include="Game\Bunny.cpp" />
     <ClCompile Include="Game\Hero.cpp" />
+    <ClCompile Include="Game\Meteor.cpp" />
     <ClCompile Include="Game\Mode1.cpp" />
     <ClCompile Include="Game\Mode2.cpp" />
     <ClCompile Include="Game\Ship.cpp" />
     <ClCompile Include="Game\Splash.cpp" />
+    <ClCompile Include="Game\TreeStump.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -184,14 +188,17 @@ xcopy /d /y Assets\* "$(OutputPath)Assets"
     <ClInclude Include="Game\Background.h" />
     <ClInclude Include="Game\Ball.h" />
     <ClInclude Include="Game\Ball_Anims.h" />
+    <ClInclude Include="Game\Bunny.h" />
     <ClInclude Include="Game\Flame_Anims.h" />
     <ClInclude Include="Game\Hero.h" />
     <ClInclude Include="Game\Hero_Anims.h" />
+    <ClInclude Include="Game\Meteor.h" />
     <ClInclude Include="Game\Mode1.h" />
     <ClInclude Include="Game\Mode2.h" />
     <ClInclude Include="Game\Screens.h" />
     <ClInclude Include="Game\Ship.h" />
     <ClInclude Include="Game\Splash.h" />
+    <ClInclude Include="Game\TreeStump.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Engine\Vec2.inl" />

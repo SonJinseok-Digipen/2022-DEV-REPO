@@ -1,3 +1,4 @@
+#pragma once
 /*--------------------------------------------------------------
 Copyright (C) 2021 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the prior
@@ -39,7 +40,31 @@ namespace CS230 {
 		void SetRotation(double newRotationAmount);
 		void UpdateRotation(double newRotationAmount);
 
+
 		Sprite sprite;
+
+	protected:
+		class State {
+		public:
+			virtual void Enter(GameObject* object) = 0;
+			virtual void Update(GameObject* object, double dt) = 0;
+			virtual void TestForExit(GameObject* object) = 0;
+			virtual std::string GetName() = 0;
+		};
+		class State_Nothing : public State {
+		public:
+			void Enter(GameObject*) override {}
+			void Update(GameObject*, double) override {}
+			void TestForExit(GameObject*) override {}
+			std::string GetName() { return ""; }
+		};
+		State_Nothing state_nothing;
+		void ChangeState(State* newState);
+		State* currState;
+
+
+
+
 
 	private:
 		math::TransformMatrix objectMatrix;

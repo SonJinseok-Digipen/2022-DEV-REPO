@@ -25,9 +25,9 @@ void CS230::GameObjectManager::UpdateAll(double dt)
 
 void CS230::GameObjectManager::DrawAll(math::TransformMatrix& cameraMatrix)
 {
-	for (GameObject* obj : gameObjects)
+	for (int i = 0; i < gameObjects.size(); i++)
 	{
-		obj->Draw(cameraMatrix);
+		gameObjects[i]->Draw(cameraMatrix);
 	}
 }
 
