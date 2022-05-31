@@ -1,9 +1,10 @@
-#pragma once
+#pragma oncef
 //Date : 2022-05-29
 //Name : Jinseok Son
 //Description: Simple Singleton class
 #include"Printer.h"
 #include<iostream>
+
 template<typename T>
 class SingleTon
 {
@@ -14,21 +15,20 @@ public:
 		{
 			mInstance = new T();
 		}
-		else
-			return mInstance;
+		return mInstance;
 		
 	}
-private:
-	inline static T* mInstance=nullptr;
+	private:
+inline static T* mInstance=nullptr;
 
 };
+
 class Printer :public SingleTon<Printer>
 {
 public:
 	void print()
 	{
 		std::cout << "Hello" << '\n';
-
 	}
 };
 
