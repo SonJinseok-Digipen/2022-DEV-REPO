@@ -73,7 +73,8 @@ void CS230::Sprite::Load(const std::filesystem::path& spriteInfoFile) {
 		}
 		inFile >> text;
 	}
-	if (frameTexel.empty() == true) {
+	if (frameTexel.empty() == true) 
+	{
 		frameTexel.push_back({ 0,0 });
 	}
 	if (animations.empty() == true) {

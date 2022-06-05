@@ -16,7 +16,8 @@ Creation date: 2/14/2021
 
 
 namespace CS230 {
-	class GameObject {
+	class GameObject 
+	{
 	public:
 		GameObject(math::vec2 position);
 		GameObject(math::vec2 position, double rotation, math::vec2 scale);
@@ -61,11 +62,6 @@ namespace CS230 {
 		State_Nothing state_nothing;
 		void ChangeState(State* newState);
 		State* currState;
-
-
-
-
-
 	private:
 		math::TransformMatrix objectMatrix;
 		bool updateMatrix;

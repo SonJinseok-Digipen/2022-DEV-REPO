@@ -13,8 +13,10 @@ Creation date: 2/11/2021
 #include "Vec2.h"
 #include "Texture.h"
 #include"TransformMatrix.h"
+
 namespace CS230 
 {
+    
     class Animation;
     class Sprite {
     public:
